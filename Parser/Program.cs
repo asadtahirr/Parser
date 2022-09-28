@@ -40,6 +40,7 @@ else
 
             reader.Close();
         }
+
     }
     catch (Exception exception) when (
         exception is ArgumentException
@@ -55,33 +56,41 @@ else
         Console.WriteLine($"File read error: {exception.Message}");
     }
 
-    string updatedContents = ReplacePeriods(contents);
 
-    try
+    if (string.IsNullOrEmpty(contents))
     {
-        using (StreamWriter writer = File.CreateText("TelegramCopy.txt"))
+        Console.WriteLine("Error");
+    }
+    else
+    {
+        string updatedContents = ReplacePeriods(contents);
+
+        try
         {
-            await writer.WriteAsync(updatedContents);
+            using (StreamWriter writer = File.CreateText("TelegramCopy.txt"))
+            {
+                await writer.WriteAsync(updatedContents);
 
-            writer.Close();
+                writer.Close();
+            }
         }
-    }
-    catch (Exception exception) when (
-        exception is UnauthorizedAccessException
-        || exception is ArgumentException
-        || exception is ArgumentNullException
-        || exception is PathTooLongException
-        || exception is DirectoryNotFoundException
-        || exception is NotSupportedException
-    ) {
-        Console.WriteLine($"New file create error: {exception.Message}");
-    }
-    catch (Exception exception) when (
-        exception is ObjectDisposedException
-        || exception is InvalidOperationException
-    ) {
-        Console.WriteLine($"File save error: {exception.Message}");
-    }
+        catch (Exception exception) when (
+            exception is UnauthorizedAccessException
+            || exception is ArgumentException
+            || exception is ArgumentNullException
+            || exception is PathTooLongException
+            || exception is DirectoryNotFoundException
+            || exception is NotSupportedException
+        ) {
+            Console.WriteLine($"New file create error: {exception.Message}");
+        }
+        catch (Exception exception) when (
+            exception is ObjectDisposedException
+            || exception is InvalidOperationException
+        ) {
+            Console.WriteLine($"File save error: {exception.Message}");
+        }
 
-    Console.WriteLine("Operation successful.");
+        Console.WriteLine("Operation successful.");
+    }
 }
